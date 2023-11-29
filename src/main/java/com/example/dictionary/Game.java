@@ -1,42 +1,12 @@
 package com.example.dictionary;
 
-import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.input.MouseEvent;
-
 import java.io.*;
-import java.util.Random;
+import java.util.*;
 
 public class Game {
-    @FXML
-    private Button Button1;
-    @FXML
-    private Button Button2;
-    @FXML
-    private Button Button3;
-    @FXML
-    private Button Button4;
-
-    @FXML
-    private TextArea consoleLog;
-    @FXML
-    private Label Question;
-    private String ans;
-
-    private int num;
-
-    public void initialize(){
-        int numOfQuestions = getNumOfQuestions();
-        num = numOfQuestions;
-        String line = choose(num);
-        loadQuestion(line);
-    }
-
     public static int getNumOfQuestions() {
         int numOfQuestions = 0;
-        File file = new File("src\\main\\java\\com\\example\\dictionary\\game1.txt");
+        File file = new File("src\\game1.txt");
 
         BufferedReader br = null;
 
@@ -56,41 +26,54 @@ public class Game {
         return 0;
     }
 
-    public void loadQuestion(String line) {
-        String question = "", A = "", B = "", C = "", D = "";
+    public static void loadQuestion(int numOfQuestions) {
+        String line = choose(numOfQuestions);
+        String question = "", A = "", B = "", C = "", D = "", ans = "";
         int currentTab = 0, numTab = 0, setTab = 0;
         for (int i = 0; i< line.length(); i++) {
-            if (line.charAt(i) == '\t') {
+            if(line.charAt(i) == '\t') {
                 setTab = i;
-                if (numTab == 0) {
+                if(numTab == 0) {
                     question = new String(line.substring(currentTab, setTab));
-                    Question.setText(question);
                     numTab++;
-                } else if (numTab == 1) {
+                }
+                else if(numTab == 1) {
                     A = new String(line.substring(currentTab, setTab));
-                    Button1.setText(A);
                     numTab++;
-                } else if (numTab == 2) {
+                }
+                else if(numTab == 2) {
                     B = new String(line.substring(currentTab, setTab));
-                    Button2.setText(B);
                     numTab++;
-                } else if (numTab == 3) {
+                }
+                else if(numTab == 3) {
                     C = new String(line.substring(currentTab, setTab));
-                    Button3.setText(C);
                     numTab++;
-                } else if (numTab == 4) {
+                }
+                else if(numTab == 4) {
                     D = new String(line.substring(currentTab, setTab));
-                    Button4.setText(D);
-                    ans = new String(line.substring(setTab + 1));
+                    ans = new String(line.substring(setTab+1));
                     break;
                 }
-                currentTab = setTab + 1;
+                currentTab = setTab+1;
             }
+        }
+        System.out.println(question + "\n" + A + "\n" + B + "\n" + C + "\n" + D + "\nYour choice [A/B/C/D]");
+        Scanner sc = new Scanner(System.in);
+        String s = sc.nextLine();
+        if (s.toUpperCase().equals(ans)) {
+            System.out.println("Correct");
+        }else {
+            System.out.println("Incorrect");
+        }
+        System.out.println("Continue?Y/N");
+        s = sc.nextLine();
+        if (s.toUpperCase().equals("Y")) {
+            loadQuestion(numOfQuestions);
         }
     }
 
-    public String choose(int numOfQuestions) {
-        File file = new File("src\\main\\java\\com\\example\\dictionary\\game1.txt");
+    public static String choose(int numOfQuestions) {
+        File file = new File("src\\game1.txt");
         BufferedReader br = null;
         try {
             br = new BufferedReader(new FileReader(file));
@@ -115,50 +98,4 @@ public class Game {
         }
         return "";
     }
-
-    public void Button1Pressed(MouseEvent event) {
-        if(ans.equals("A")) {
-            System.out.println("Correct");
-            consoleLog.setText("Correct");
-        } else {
-            System.out.println("Incorrect");
-            consoleLog.setText("Incorrect");
-        }
-    }
-
-    public void Button2Pressed(MouseEvent event) {
-        if(ans.equals("B")) {
-            System.out.println("Correct");
-            consoleLog.setText("Correct");
-        } else {
-            System.out.println("Incorrect");
-            consoleLog.setText("Incorrect");
-        }
-    }
-
-    public void Button3Pressed(MouseEvent event) {
-        if(ans.equals("C")) {
-            System.out.println("Correct");
-            consoleLog.setText("Correct");
-        } else {
-            System.out.println("Incorrect");
-            consoleLog.setText("Incorrect");
-        }
-    }
-
-    public void Button4Pressed(MouseEvent event) {
-        if(ans.equals("D")) {
-            System.out.println("Correct");
-            consoleLog.setText("Correct");
-        } else {
-            System.out.println("Incorrect");
-            consoleLog.setText("Incorrect");
-        }
-    }
-
-    public void refresh(MouseEvent event) {
-        String line = choose(num);
-        loadQuestion(line);
-    }
-
 }

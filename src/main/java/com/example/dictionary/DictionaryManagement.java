@@ -1,21 +1,16 @@
 package com.example.dictionary;
 
-import com.sun.speech.freetts.Voice;
-import com.sun.speech.freetts.VoiceManager;
 
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
+import java.util.Scanner;
 
 public class DictionaryManagement {
 
-    /*
-    public void insertFromCommandline() {
+    public static void insertFromCommandline() {
         Scanner scan = new Scanner(System.in);
-        int numberOfWord = scan.nextInt();
-        scan.nextLine();
-        for (int i = 0; i <= numberOfWord; i++) {
+        String s = scan.nextLine();
+        int numberOfWord = Integer.parseInt(s);
+        for (int i = 1; i <= numberOfWord; i++) {
             String newWord = scan.nextLine();
             String wordMean = scan.nextLine();
             Word word = new Word(newWord, wordMean);
@@ -23,11 +18,28 @@ public class DictionaryManagement {
         }
         scan.close();
     }
-     */
 
     public static void insertFromFile() {
         try {
-            BufferedReader reader = new BufferedReader(new FileReader("src\\main\\java\\com\\example\\dictionary\\engToVieCleanned.txt"));// Infile
+            BufferedReader reader = new BufferedReader(new FileReader("src\\dictionaries.txt"));
+            String line = reader.readLine();
+            while (line != null) {
+                int indexOfTab = line.indexOf("\t");
+                if (indexOfTab > 1) {
+                    Word newWord = new Word(line.substring(0, indexOfTab), line.substring(indexOfTab+1));
+                    Dictionary.addNewWord(newWord);
+                }
+                line = reader.readLine();
+            }
+            reader.close();
+        } catch (IOException e) {
+            System.out.println("An error occurred." + e);
+        }
+    }
+
+    public static void insertAtStart() {
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader("src\\engToVieCleanned.txt"));
             String line = reader.readLine();
             while (line != null) {
                 int indexOfTab = line.indexOf("/");
@@ -56,6 +68,9 @@ public class DictionaryManagement {
             if (word_.equals(Dictionary.words.get(i).getWordTarget())) {
                 Dictionary.words.remove(Dictionary.words.get(i));
             }
+            else if(i == Dictionary.words.size()-1) {
+                System.out.println("Word not found");
+            }
         }
     }
 
@@ -63,35 +78,29 @@ public class DictionaryManagement {
         Dictionary.words.add(word);
     }
 
-    /*
-    public static String editDictionary(String word, String word_) {
+    public static void editDictionary(String word, String word_) {
         for (int i = 0; i < Dictionary.words.size(); i++) {
             if (Dictionary.words.get(i).getWordTarget().equals(word)
-                    && DictionaryManagement.dictionaryLookup(word_) == "Can't find your word!") {
+                    && DictionaryManagement.dictionaryLookup(word) != word_) {
                 Dictionary.words.get(i).setWordTarget(word_);
-                return "Edited!";
             }
         }
-        return "Your word is already exists!";
     }
-     */
-
-    public static void dictionaryEdit(String oldWord, Word word_) {
+    /*
+    public static void editDictionary(String oldWord, Word word_) {
         for (int i = 0; i < Dictionary.words.size(); i++) {
             if (Dictionary.words.get(i).getWordTarget().equals(oldWord)) {
                 Dictionary.words.get(i).setWordTarget(word_.getWordTarget());
                 Dictionary.words.get(i).setWordExplain(word_.getWordExplain());
-                //return "Edited!";
             }
         }
-        //return "Thất bại";
     }
-
+     */
     public static void dictionaryExportToFile() {
         try {
-            FileOutputStream fileOut = new FileOutputStream("src\\main\\java\\com\\example\\dictionary\\engToVieCleanned.txt"); //Outfile
+            FileOutputStream fileOut = new FileOutputStream("src\\engToVieCleanned.txt");
             for (int i = 0; i < Dictionary.words.size(); i++) {
-                String line = "@" + Dictionary.words.get(i).getWordTarget() + " " + Dictionary.words.get(i).getWordExplain() + "\r\n";
+                String line = Dictionary.words.get(i).getWordTarget() + "\t" + Dictionary.words.get(i).getWordExplain() + "\r\n";
                 byte out[] = line.getBytes();
                 fileOut.write(out);
             }
@@ -102,89 +111,11 @@ public class DictionaryManagement {
         }
     }
 
-    public static String makeTrueForm(String str) {
-        String res = "";
-        for (int i = 0; i < str.length(); i++) {
-            if (str.charAt(i) == '*' || str.charAt(i) == '-') {
-                res += "\r\n";
-            }
-            res += str.charAt(i);
-        }
-        return res;
-    }
-
-    //https://stackoverflow.com/questions/53008424/how-to-fix-error-cannot-be-cast-to-com-sun-speech-freetts-voicedirectory
-    public static void wordSpell(String word) {
-        System.setProperty("freetts.voices", "com.sun.speech.freetts.en.us.cmu_us_kal.KevinVoiceDirectory");
-        Voice voice = VoiceManager.getInstance().getVoice("kevin16");
-        if (voice != null) {
-            voice.allocate();// Allocating Voice
-            try {
-                voice.setRate(150);// Setting the rate of the voice
-                voice.setPitch(150);// Setting the Pitch of the voice
-                voice.setVolume(3);// Setting the volume of the voice
-                voice.speak(word);// Calling speak() method
-            } catch (Exception e1) {
-                e1.printStackTrace();
-            }
-        } else {
-            throw new IllegalStateException("Cannot find voice: kevin16");
-        }
-    }
-//    public static String getOnline(String translateTxt,String mode) {
-//        IamAuthenticator authenticator = new IamAuthenticator("pvdSB1Kok5TtDQ1U3xMRBGt79QoNBDB_1XtHQyiskRz");
-//        LanguageTranslator languageTranslator = new LanguageTranslator("2018-05-01", authenticator);
-//        languageTranslator.setServiceUrl("https://api.eu-gb.tone-analyzer.watson.cloud.ibm.com/5010591b-e36d-46dc-bc02-124c01a97fe3");
-//        String tempTxt = "";
-//        if (mode.equals("en-vi")) {
-//            TranslateOptions translateOptions = new TranslateOptions.Builder()
-//                    .addText(translateTxt)
-//                    .modelId("en-vi")
-//                    .build();
-//            TranslationResult result = languageTranslator.translate(translateOptions)
-//                    .execute().getResult();
-//            tempTxt = result.toString();
-//            return tempTxt;
-//        } else if (mode.equals("vi-en")) {
-//            TranslateOptions translateOptions = new TranslateOptions.Builder()
-//                    .addText(translateTxt)
-//                    .modelId("vi-en")
-//                    .build();
-//            TranslationResult result = languageTranslator.translate(translateOptions)
-//                    .execute().getResult();
-//            tempTxt = result.toString();
-//            return tempTxt;
-//        }
-//        //String res = DictionaryManagement.getTranslate(tempTxt);
-//        //resultTxt.setText(res);
-//        // System.out.println(result);
-//        //System.out.println("done3!");
-//        return tempTxt;
+//    public static String getTranslate(String s) {
+//        int index = s.lastIndexOf("translation");
+//        int index2 = s.indexOf("\"",index);
+//        int index3 = s.lastIndexOf("\"");
+//        String res = s.substring(index2+4,index3);
+//        return res;
 //    }
-
-    public static String getOnline(String langFrom, String langTo, String text) throws IOException {
-        // INSERT YOU URL HERE
-        String urlStr = "https://script.google.com/macros/s/AKfycbw6i36gmKqj7ByIICkKf5mXOJNDPnv_BdnPvxk8ue8W6otjUMZzvGHG14VxjTUm9nw3jg/exec" +
-                "?q=" + URLEncoder.encode(text, "UTF-8") +
-                "&target=" + langTo +
-                "&source=" + langFrom;
-        URL url = new URL(urlStr);
-        StringBuilder response = new StringBuilder();
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        con.setRequestProperty("User-Agent", "Mozilla/5.0");
-        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-        String inputLine;
-        while ((inputLine = in.readLine()) != null) {
-            response.append(inputLine);
-        }
-        in.close();
-        return response.toString();
-    }
-    public static String getTranslate(String s) {
-        int index = s.lastIndexOf("translation");
-        int index2 = s.indexOf("\"",index);
-        int index3 = s.lastIndexOf("\"");
-        String res = s.substring(index2+4,index3);
-        return res;
-    }
 }

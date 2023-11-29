@@ -2,18 +2,18 @@ package com.example.dictionary;
 
 public class Word {
 
-    private String wordTarget; //từ
-    private String wordExplain; //nghĩa
+    private String wordTarget;
+    private String wordExplain;
 
-    Word() {
+    public Word() {
     }
 
-    Word(String wordTarget, String wordExplain) {
+    public Word(String wordTarget, String wordExplain) {
         this.wordTarget = wordTarget;
         this.wordExplain = wordExplain;
     }
 
-    String getWordTarget() {
+    public String getWordTarget() {
         return wordTarget;
     }
 
@@ -30,6 +30,6 @@ public class Word {
     }
 
     public void getWordInfo(int i) {
-        System.out.format("%-8s %-1s %-30s %-1s %-40s\n", (i + 1), "|", getWordTarget(), "|", getWordExplain());
+        System.out.format("%-8s %-1s%-31s %-1s%-40s\n", (i + 1), "|", getWordTarget(), "|", getWordExplain());
     }
 }
