@@ -10,6 +10,7 @@ module com.example.dictionary {
     requires java.desktop;
     requires freetts;
     requires voicerss.tts;
+    requires jsapi;
 
     opens com.example.dictionary to javafx.fxml;
     exports com.example.dictionary;

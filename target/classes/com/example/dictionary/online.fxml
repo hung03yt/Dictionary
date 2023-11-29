@@ -9,7 +9,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="490.0" prefWidth="830.0" style="-fx-background-color: #DDDDDD;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.dictionary.Search">
+<AnchorPane prefHeight="490.0" prefWidth="830.0" style="-fx-background-color: #DDDDDD;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.dictionary.Online">
     <children>
         <TextArea fx:id="inputWord" layoutX="25.0" layoutY="45.0" prefHeight="200.0" prefWidth="650.0" promptText="Nhập từ cần DỊCH vào đây! :">
             <font>

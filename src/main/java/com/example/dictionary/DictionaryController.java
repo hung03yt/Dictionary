@@ -39,13 +39,13 @@ public class DictionaryController implements Initializable {
     }
 
     public void online(ActionEvent actionEvent) throws IOException {
-        Parent fxml = FXMLLoader.load(getClass().getResource("offline.fxml"));
+        Parent fxml = FXMLLoader.load(getClass().getResource("online.fxml"));
         contentArea.getChildren().removeAll();
         contentArea.getChildren().setAll(fxml);
     }
 
     public void searcher(ActionEvent actionEvent) throws IOException {
-        Parent fxml = FXMLLoader.load(getClass().getResource("searcher.fxml"));
+        Parent fxml = FXMLLoader.load(getClass().getResource("offline.fxml"));
         contentArea.getChildren().removeAll();
         contentArea.getChildren().setAll(fxml);
     }
@@ -61,10 +61,16 @@ public class DictionaryController implements Initializable {
         contentArea.getChildren().removeAll();
         contentArea.getChildren().setAll(fxml);
     }
+    public void game(ActionEvent actionEvent) throws IOException {
+        Parent fxml = FXMLLoader.load(getClass().getResource("game.fxml"));
+        contentArea.getChildren().removeAll();
+        contentArea.getChildren().setAll(fxml);
+    }
 
     public void about(MouseEvent event) throws IOException {
         Parent fxml = FXMLLoader.load(getClass().getResource("about.fxml"));
         contentArea.getChildren().removeAll();
         contentArea.getChildren().setAll(fxml);
     }
+
 }

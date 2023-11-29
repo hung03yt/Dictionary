@@ -1,16 +1,12 @@
 package com.example.dictionary;
 
-import com.ibm.cloud.sdk.core.security.IamAuthenticator;
-import com.ibm.watson.language_translator.v3.LanguageTranslator;
-import com.ibm.watson.language_translator.v3.model.TranslateOptions;
-import com.ibm.watson.language_translator.v3.model.TranslationResult;
 import com.sun.speech.freetts.Voice;
 import com.sun.speech.freetts.VoiceManager;
 
-import java.io.BufferedReader;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 
 public class DictionaryManagement {
 
@@ -135,35 +131,54 @@ public class DictionaryManagement {
             throw new IllegalStateException("Cannot find voice: kevin16");
         }
     }
-    public static String getOnline(String translateTxt,String mode) {
-        IamAuthenticator authenticator = new IamAuthenticator("pvdSB1Kok5TtDQ1U3xMRBGt79QoNBDB_1XtHQyiskRz");
-        LanguageTranslator languageTranslator = new LanguageTranslator("2018-05-01", authenticator);
-        languageTranslator.setServiceUrl("https://api.eu-gb.tone-analyzer.watson.cloud.ibm.com/5010591b-e36d-46dc-bc02-124c01a97fe3");
-        String tempTxt = "";
-        if (mode.equals("en-vi")) {
-            TranslateOptions translateOptions = new TranslateOptions.Builder()
-                    .addText(translateTxt)
-                    .modelId("en-vi")
-                    .build();
-            TranslationResult result = languageTranslator.translate(translateOptions)
-                    .execute().getResult();
-            tempTxt = result.toString();
-            return tempTxt;
-        } else if (mode.equals("vi-en")) {
-            TranslateOptions translateOptions = new TranslateOptions.Builder()
-                    .addText(translateTxt)
-                    .modelId("vi-en")
-                    .build();
-            TranslationResult result = languageTranslator.translate(translateOptions)
-                    .execute().getResult();
-            tempTxt = result.toString();
-            return tempTxt;
+//    public static String getOnline(String translateTxt,String mode) {
+//        IamAuthenticator authenticator = new IamAuthenticator("pvdSB1Kok5TtDQ1U3xMRBGt79QoNBDB_1XtHQyiskRz");
+//        LanguageTranslator languageTranslator = new LanguageTranslator("2018-05-01", authenticator);
+//        languageTranslator.setServiceUrl("https://api.eu-gb.tone-analyzer.watson.cloud.ibm.com/5010591b-e36d-46dc-bc02-124c01a97fe3");
+//        String tempTxt = "";
+//        if (mode.equals("en-vi")) {
+//            TranslateOptions translateOptions = new TranslateOptions.Builder()
+//                    .addText(translateTxt)
+//                    .modelId("en-vi")
+//                    .build();
+//            TranslationResult result = languageTranslator.translate(translateOptions)
+//                    .execute().getResult();
+//            tempTxt = result.toString();
+//            return tempTxt;
+//        } else if (mode.equals("vi-en")) {
+//            TranslateOptions translateOptions = new TranslateOptions.Builder()
+//                    .addText(translateTxt)
+//                    .modelId("vi-en")
+//                    .build();
+//            TranslationResult result = languageTranslator.translate(translateOptions)
+//                    .execute().getResult();
+//            tempTxt = result.toString();
+//            return tempTxt;
+//        }
+//        //String res = DictionaryManagement.getTranslate(tempTxt);
+//        //resultTxt.setText(res);
+//        // System.out.println(result);
+//        //System.out.println("done3!");
+//        return tempTxt;
+//    }
+
+    public static String getOnline(String langFrom, String langTo, String text) throws IOException {
+        // INSERT YOU URL HERE
+        String urlStr = "https://script.google.com/macros/s/AKfycbw6i36gmKqj7ByIICkKf5mXOJNDPnv_BdnPvxk8ue8W6otjUMZzvGHG14VxjTUm9nw3jg/exec" +
+                "?q=" + URLEncoder.encode(text, "UTF-8") +
+                "&target=" + langTo +
+                "&source=" + langFrom;
+        URL url = new URL(urlStr);
+        StringBuilder response = new StringBuilder();
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestProperty("User-Agent", "Mozilla/5.0");
+        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        String inputLine;
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
         }
-        //String res = DictionaryManagement.getTranslate(tempTxt);
-        //resultTxt.setText(res);
-        // System.out.println(result);
-        //System.out.println("done3!");
-        return tempTxt;
+        in.close();
+        return response.toString();
     }
     public static String getTranslate(String s) {
         int index = s.lastIndexOf("translation");

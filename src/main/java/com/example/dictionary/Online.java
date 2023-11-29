@@ -9,7 +9,7 @@ import javafx.scene.input.MouseEvent;
 
 
 // Đặt nhầm tên ->Online
-public class Offline {
+public class Online {
     @FXML
     private TextArea inputWord;
     @FXML
@@ -31,12 +31,12 @@ public class Offline {
 
     public void setModeTrans(MouseEvent event) {
         if (modeButton.isSelected()) {
-            modeTrans = "en - vi";
-            modeText.setText("ENG to VIE");
+            modeTrans = "vi-en";
+            modeText.setText("VIE to ENG");
             inputWord.setText("");
             resultTxt.setText("");
         } else {
-            modeTrans = "en - vi";
+            modeTrans = "en-vi";
             modeText.setText("ENG to VIE");
             inputWord.setText("");
             resultTxt.setText("");
@@ -46,8 +46,11 @@ public class Offline {
     public void onlineSearch(MouseEvent event) throws Exception {
         String translateTxt = inputWord.getText().trim();
         if (translateTxt != null && translateTxt.length() >0) {
-            if(DictionaryCommandline.searchWord(translateTxt)) {
-                String res = DictionaryManagement.dictionaryLookup(translateTxt);
+            if(modeTrans == "en-vi") {
+                String res = DictionaryManagement.getOnline("en", "vi", translateTxt);
+                resultTxt.setText(res);
+            } else {
+                String res = DictionaryManagement.getOnline("vi", "en", translateTxt);
                 resultTxt.setText(res);
             }
         }
@@ -64,12 +67,8 @@ public class Offline {
     public void voice2(MouseEvent event) throws Exception {
         String temp = resultTxt.getText().trim();
         if (temp.length() > 0 && temp != null) {
-            if (modeTrans.equals("en-vi")) {
-                VoiceAPI.getVoiceVie(temp);
-                VoiceAPI.play("vie_voice.wav");
-            } else {
-                VoiceAPI.getVoiceVie(temp);
-                VoiceAPI.play("eng_voice.wav");
+            if (modeTrans.equals("vi-en")) {
+                DictionaryCommandline.textToSpeech(temp);
             }
         }
     }
